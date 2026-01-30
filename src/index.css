@@ -67,7 +67,7 @@
     writing-mode: vertical-rl;
     text-orientation: mixed;
     transform: rotate(180deg);
-    @apply text-4xl md:text-5xl lg:text-6xl font-light tracking-widest text-primary uppercase;
+    @apply text-4xl md:text-5xl lg:text-6xl font-light tracking-widest text-primary-foreground uppercase;
   }
 
   .nav-link {
