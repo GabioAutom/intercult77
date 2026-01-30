@@ -22,52 +22,49 @@ const MainLayout = ({ children, pageTitle }: MainLayoutProps) => {
 
   return (
     <div className="min-h-screen flex flex-col">
+      {/* Header Row: Logo + Navigation */}
+      <header className="flex">
+        {/* Logo Area */}
+        <div className="w-64 md:w-72 lg:w-80 flex-shrink-0 h-32 md:h-40 flex items-end justify-center pb-4 bg-primary">
+          <Link to="/" className="block">
+            <h1 className="text-2xl md:text-3xl font-light text-primary-foreground tracking-wide">
+              intercult<span className="font-bold">77</span>
+            </h1>
+          </Link>
+        </div>
+        
+        {/* Navigation */}
+        <nav className="flex-1 h-32 md:h-40 flex items-end pb-4 px-8 md:px-12">
+          <ul className="flex flex-wrap gap-4 md:gap-6 lg:gap-8">
+            {navigation.map((item) => (
+              <li key={item.name}>
+                <Link
+                  to={item.href}
+                  className={
+                    location.pathname === item.href
+                      ? "nav-link-active"
+                      : "nav-link"
+                  }
+                >
+                  {item.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </header>
+
       {/* Main Content Area */}
       <div className="flex-1 flex">
-        {/* Left Column: Logo + Page Title */}
-        <div className="w-64 md:w-72 lg:w-80 flex-shrink-0 flex flex-col">
-          {/* Logo Area */}
-          <div className="h-32 md:h-40 flex items-end justify-center pb-4 bg-primary">
-            <Link to="/" className="block">
-              <h1 className="text-2xl md:text-3xl font-light text-primary-foreground tracking-wide">
-                intercult<span className="font-bold">77</span>
-              </h1>
-            </Link>
-          </div>
-          
-          {/* Page Title Vertical */}
-          <div className="flex-1 flex items-center justify-center bg-primary relative">
-            <span className="page-title-vertical">{pageTitle}</span>
-          </div>
+        {/* Left Column: Page Title Vertical */}
+        <div className="w-64 md:w-72 lg:w-80 flex-shrink-0 flex items-center justify-center bg-primary">
+          <span className="page-title-vertical">{pageTitle}</span>
         </div>
 
-        {/* Right Column: Navigation + Content */}
-        <div className="flex-1 flex flex-col min-w-0">
-          {/* Navigation */}
-          <nav className="h-32 md:h-40 flex items-end pb-4 px-8 md:px-12">
-            <ul className="flex flex-wrap gap-4 md:gap-6 lg:gap-8">
-              {navigation.map((item) => (
-                <li key={item.name}>
-                  <Link
-                    to={item.href}
-                    className={
-                      location.pathname === item.href
-                        ? "nav-link-active"
-                        : "nav-link"
-                    }
-                  >
-                    {item.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-
-          {/* Content Area */}
-          <main className="flex-1 content-area py-8 md:py-12 animate-fade-in">
-            {children}
-          </main>
-        </div>
+        {/* Right Column: Content */}
+        <main className="flex-1 content-area py-8 md:py-12 animate-fade-in">
+          {children}
+        </main>
       </div>
 
       {/* Footer */}
