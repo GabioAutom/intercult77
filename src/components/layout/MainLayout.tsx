@@ -2,7 +2,13 @@ import { ReactNode } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Instagram, Facebook, Linkedin } from "lucide-react";
 import defaultTitleBackground from "@/assets/title-background.jpg";
-import logo from "@/assets/logo-intercult77.png";
+
+const Logo = () => (
+  <span className="text-xl font-light tracking-wide">
+    <span className="text-white">intercult</span>
+    <span className="text-primary font-semibold">77</span>
+  </span>
+);
 
 interface MainLayoutProps {
   children: ReactNode;
@@ -29,7 +35,7 @@ const MainLayout = ({ children, pageTitle, titleBackground }: MainLayoutProps) =
       {/* Mobile Header */}
       <header className="md:hidden bg-logo-bg p-4">
         <Link to="/" className="block text-center">
-          <img src={logo} alt="Intercult77" className="h-12 mx-auto" />
+          <Logo />
         </Link>
         {/* Mobile Navigation */}
         <nav className="mt-4 overflow-x-auto">
@@ -64,7 +70,7 @@ const MainLayout = ({ children, pageTitle, titleBackground }: MainLayoutProps) =
         {/* Logo Area */}
         <div className="w-72 lg:w-80 flex-shrink-0 h-40 flex items-end justify-center pb-4 bg-logo-bg">
           <Link to="/" className="block">
-            <img src={logo} alt="Intercult77" className="h-14" />
+            <Logo />
           </Link>
         </div>
         
