@@ -29,7 +29,7 @@ const MainLayout = ({ children, pageTitle, titleBackground }: MainLayoutProps) =
       {/* Mobile Header */}
       <header className="md:hidden bg-logo-bg p-4">
         <Link to="/" className="block text-center">
-          <img src={logo} alt="Intercult77" className="h-8 mx-auto" />
+          <img src={logo} alt="Intercult77" className="h-12 mx-auto" />
         </Link>
         {/* Mobile Navigation */}
         <nav className="mt-4 overflow-x-auto">
@@ -64,7 +64,7 @@ const MainLayout = ({ children, pageTitle, titleBackground }: MainLayoutProps) =
         {/* Logo Area */}
         <div className="w-72 lg:w-80 flex-shrink-0 h-40 flex items-end justify-center pb-4 bg-logo-bg">
           <Link to="/" className="block">
-            <img src={logo} alt="Intercult77" className="h-10" />
+            <img src={logo} alt="Intercult77" className="h-14" />
           </Link>
         </div>
         
