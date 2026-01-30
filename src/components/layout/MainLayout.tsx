@@ -1,11 +1,12 @@
 import { ReactNode } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Instagram, Facebook, Linkedin } from "lucide-react";
-import titleBackground from "@/assets/title-background.jpg";
+import defaultTitleBackground from "@/assets/title-background.jpg";
 
 interface MainLayoutProps {
   children: ReactNode;
   pageTitle: string;
+  titleBackground?: string;
 }
 
 const navigation = [
@@ -18,8 +19,9 @@ const navigation = [
   { name: "CONTACT", href: "/contact" },
 ];
 
-const MainLayout = ({ children, pageTitle }: MainLayoutProps) => {
+const MainLayout = ({ children, pageTitle, titleBackground }: MainLayoutProps) => {
   const location = useLocation();
+  const backgroundImage = titleBackground || defaultTitleBackground;
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -99,7 +101,7 @@ const MainLayout = ({ children, pageTitle }: MainLayoutProps) => {
           {/* Title area with background image and overlay */}
           <div 
             className="flex-1 relative bg-cover bg-center"
-            style={{ backgroundImage: `url(${titleBackground})` }}
+            style={{ backgroundImage: `url(${backgroundImage})` }}
           >
             {/* Golden overlay */}
             <div className="absolute inset-0 bg-primary/80"></div>
