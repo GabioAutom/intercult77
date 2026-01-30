@@ -22,20 +22,55 @@ const MainLayout = ({ children, pageTitle }: MainLayoutProps) => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Header Row: Logo + Navigation */}
-      <header className="flex">
+      {/* Mobile Header */}
+      <header className="md:hidden bg-primary p-4">
+        <Link to="/" className="block text-center">
+          <h1 className="text-2xl font-light text-primary-foreground tracking-wide">
+            intercult<span className="font-bold">77</span>
+          </h1>
+        </Link>
+        {/* Mobile Navigation */}
+        <nav className="mt-4 overflow-x-auto">
+          <ul className="flex gap-4 justify-center flex-wrap">
+            {navigation.map((item) => (
+              <li key={item.name}>
+                <Link
+                  to={item.href}
+                  className={`text-xs font-medium tracking-wider uppercase ${
+                    location.pathname === item.href
+                      ? "text-primary-foreground underline underline-offset-4"
+                      : "text-primary-foreground/80 hover:text-primary-foreground"
+                  }`}
+                >
+                  {item.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </header>
+
+      {/* Mobile Page Title */}
+      <div className="md:hidden bg-primary py-3 px-4">
+        <h2 className="text-xl font-light tracking-widest text-primary-foreground uppercase text-center">
+          {pageTitle}
+        </h2>
+      </div>
+
+      {/* Desktop Header Row: Logo + Navigation */}
+      <header className="hidden md:flex">
         {/* Logo Area */}
-        <div className="w-64 md:w-72 lg:w-80 flex-shrink-0 h-32 md:h-40 flex items-end justify-center pb-4 bg-primary">
+        <div className="w-72 lg:w-80 flex-shrink-0 h-40 flex items-end justify-center pb-4 bg-primary">
           <Link to="/" className="block">
-            <h1 className="text-2xl md:text-3xl font-light text-primary-foreground tracking-wide">
+            <h1 className="text-3xl font-light text-primary-foreground tracking-wide">
               intercult<span className="font-bold">77</span>
             </h1>
           </Link>
         </div>
         
         {/* Navigation */}
-        <nav className="flex-1 h-32 md:h-40 flex items-end pb-4 px-8 md:px-12">
-          <ul className="flex flex-wrap gap-4 md:gap-6 lg:gap-8">
+        <nav className="flex-1 h-40 flex items-end pb-4 px-12">
+          <ul className="flex flex-wrap gap-6 lg:gap-8">
             {navigation.map((item) => (
               <li key={item.name}>
                 <Link
@@ -56,20 +91,20 @@ const MainLayout = ({ children, pageTitle }: MainLayoutProps) => {
 
       {/* Main Content Area */}
       <div className="flex-1 flex">
-        {/* Left Column: Page Title Vertical */}
-        <div className="w-64 md:w-72 lg:w-80 flex-shrink-0 flex items-center justify-center bg-primary">
+        {/* Left Column: Page Title Vertical - Desktop only */}
+        <div className="hidden md:flex w-72 lg:w-80 flex-shrink-0 items-center justify-center bg-primary">
           <span className="page-title-vertical">{pageTitle}</span>
         </div>
 
         {/* Right Column: Content */}
-        <main className="flex-1 content-area py-8 md:py-12 animate-fade-in">
+        <main className="flex-1 px-6 md:px-12 lg:px-16 py-8 md:py-12 animate-fade-in">
           {children}
         </main>
       </div>
 
       {/* Footer */}
-      <footer className="bg-footer py-8 px-8 md:px-12">
-        <div className="max-w-4xl ml-64 md:ml-72 lg:ml-80">
+      <footer className="bg-footer py-8 px-6 md:px-12">
+        <div className="md:ml-72 lg:ml-80">
           <div className="text-footer-foreground">
             <p className="font-semibold">
               Intercult 77 <span className="font-normal">ASBL</span>
