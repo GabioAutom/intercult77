@@ -91,9 +91,14 @@ const MainLayout = ({ children, pageTitle }: MainLayoutProps) => {
 
       {/* Main Content Area */}
       <div className="flex-1 flex">
-        {/* Left Column: Page Title Vertical - Desktop only */}
-        <div className="hidden md:flex w-72 lg:w-80 flex-shrink-0 items-center justify-center bg-primary">
-          <span className="page-title-vertical">{pageTitle}</span>
+        {/* Left Column: Gap + Page Title Vertical - Desktop only */}
+        <div className="hidden md:flex md:flex-col w-72 lg:w-80 flex-shrink-0">
+          {/* White gap between logo and title */}
+          <div className="h-8 lg:h-12 bg-background"></div>
+          {/* Title area */}
+          <div className="flex-1 flex items-center justify-center bg-primary">
+            <span className="page-title-vertical">{pageTitle}</span>
+          </div>
         </div>
 
         {/* Right Column: Content */}
