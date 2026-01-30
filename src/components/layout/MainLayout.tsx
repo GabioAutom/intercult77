@@ -93,16 +93,16 @@ const MainLayout = ({ children, pageTitle }: MainLayoutProps) => {
       <div className="flex-1 flex">
         {/* Left Column: Gap + Page Title Vertical - Desktop only */}
         <div className="hidden md:flex md:flex-col w-72 lg:w-80 flex-shrink-0">
-          {/* White gap between logo and title */}
-          <div className="h-8 lg:h-12 bg-background"></div>
+          {/* White gap between logo and title - matches content top padding */}
+          <div className="h-12 bg-background"></div>
           {/* Title area */}
           <div className="flex-1 flex items-center justify-center bg-primary">
             <span className="page-title-vertical">{pageTitle}</span>
           </div>
         </div>
 
-        {/* Right Column: Content */}
-        <main className="flex-1 px-6 md:px-12 lg:px-16 py-8 md:py-12 animate-fade-in">
+        {/* Right Column: Content - top padding matches the gap */}
+        <main className="flex-1 px-6 md:px-12 lg:px-16 pt-12 pb-8 md:pb-12 animate-fade-in">
           {children}
         </main>
       </div>
