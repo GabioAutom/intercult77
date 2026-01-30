@@ -36,6 +36,23 @@ import {
 import { Plus, Pencil, Trash2, MapPin, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
+const formatError = (error: unknown) => {
+  if (!error) return "Erreur inconnue";
+  if (typeof error === "string") return error;
+  if (error instanceof Error) {
+    const anyErr = error as any;
+    const parts = [anyErr?.message, anyErr?.details, anyErr?.hint, anyErr?.code]
+      .filter(Boolean)
+      .map(String);
+    return parts.length ? parts.join(" — ") : error.message;
+  }
+  try {
+    return JSON.stringify(error);
+  } catch {
+    return "Erreur inconnue";
+  }
+};
+
 const locationSchema = z.object({
   name: z.string().min(1, "Le nom est requis"),
   address: z.string().min(1, "L'adresse est requise"),
@@ -108,9 +125,10 @@ const LocationFormDialog = ({
       setOpen(false);
       onSuccess?.();
     } catch (error) {
+      console.error("Erreur lors de l'enregistrement du lieu:", error);
       toast({
         title: "Erreur",
-        description: "Une erreur est survenue",
+        description: formatError(error),
         variant: "destructive",
       });
     }
@@ -307,9 +325,10 @@ const DeleteLocationButton = ({ location }: DeleteLocationButtonProps) => {
       await deleteLocation.mutateAsync(location.id);
       toast({ title: "Lieu supprimé avec succès" });
     } catch (error) {
+      console.error("Erreur lors de la suppression du lieu:", error);
       toast({
         title: "Erreur",
-        description: "Une erreur est survenue lors de la suppression",
+        description: formatError(error),
         variant: "destructive",
       });
     }
