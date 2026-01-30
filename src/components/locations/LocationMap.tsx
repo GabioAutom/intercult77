@@ -1,19 +1,6 @@
-import { useEffect } from "react";
-import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
-import { Icon } from "leaflet";
+import { useEffect, useRef, useState } from "react";
 import { Location } from "@/types/location";
 import "leaflet/dist/leaflet.css";
-
-// Fix for default marker icon
-const defaultIcon = new Icon({
-  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-  iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
-  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41],
-});
 
 interface LocationMapProps {
   locations: Location[];
@@ -21,26 +8,16 @@ interface LocationMapProps {
   onLocationSelect?: (location: Location) => void;
 }
 
-// Component to handle map view updates
-const MapUpdater = ({ location }: { location?: Location | null }) => {
-  const map = useMap();
-
-  useEffect(() => {
-    if (location) {
-      map.flyTo([location.latitude, location.longitude], 15, {
-        duration: 1,
-      });
-    }
-  }, [location, map]);
-
-  return null;
-};
-
 const LocationMap = ({
   locations,
   selectedLocation,
   onLocationSelect,
 }: LocationMapProps) => {
+  const mapRef = useRef<HTMLDivElement>(null);
+  const mapInstanceRef = useRef<L.Map | null>(null);
+  const markersRef = useRef<L.Marker[]>([]);
+  const [isMapReady, setIsMapReady] = useState(false);
+
   // Default center: Brussels, Belgium
   const defaultCenter: [number, number] = [50.8503, 4.3517];
 
@@ -53,54 +30,123 @@ const LocationMap = ({
         ]
       : defaultCenter;
 
+  // Initialize map
+  useEffect(() => {
+    if (!mapRef.current || mapInstanceRef.current) return;
+
+    const initMap = async () => {
+      const L = await import("leaflet");
+
+      // Fix for default marker icon
+      const defaultIcon = L.icon({
+        iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+        iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
+        shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41],
+      });
+      L.Marker.prototype.options.icon = defaultIcon;
+
+      const map = L.map(mapRef.current!, {
+        center: center,
+        zoom: 12,
+      });
+
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      }).addTo(map);
+
+      mapInstanceRef.current = map;
+      setIsMapReady(true);
+    };
+
+    initMap();
+
+    return () => {
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.remove();
+        mapInstanceRef.current = null;
+      }
+    };
+  }, []);
+
+  // Update markers when locations change
+  useEffect(() => {
+    if (!mapInstanceRef.current || !isMapReady) return;
+
+    const L = (window as unknown as { L: typeof import("leaflet") }).L;
+    if (!L) return;
+
+    // Clear existing markers
+    markersRef.current.forEach((marker) => marker.remove());
+    markersRef.current = [];
+
+    // Add new markers
+    locations.forEach((location) => {
+      const marker = L.marker([location.latitude, location.longitude]).addTo(
+        mapInstanceRef.current!
+      );
+
+      const popupContent = `
+        <div style="min-width: 200px;">
+          <h3 style="font-weight: 600; font-size: 1.1rem; margin-bottom: 4px;">${location.name}</h3>
+          <p style="font-size: 0.875rem; opacity: 0.7; margin-bottom: 8px;">${location.address}</p>
+          ${location.description ? `<p style="font-size: 0.875rem; margin-bottom: 8px;">${location.description}</p>` : ""}
+          ${location.phone ? `<p style="font-size: 0.875rem;"><strong>Tél:</strong> ${location.phone}</p>` : ""}
+          ${location.hours ? `<p style="font-size: 0.875rem;"><strong>Horaires:</strong> ${location.hours}</p>` : ""}
+          ${location.category ? `<span style="display: inline-block; margin-top: 8px; padding: 2px 8px; background: hsl(45, 60%, 92%); font-size: 0.75rem; border-radius: 4px;">${location.category}</span>` : ""}
+        </div>
+      `;
+
+      marker.bindPopup(popupContent);
+
+      marker.on("click", () => {
+        onLocationSelect?.(location);
+      });
+
+      markersRef.current.push(marker);
+    });
+
+    // Fit bounds if we have locations
+    if (locations.length > 0 && markersRef.current.length > 0) {
+      const group = L.featureGroup(markersRef.current);
+      mapInstanceRef.current.fitBounds(group.getBounds().pad(0.1));
+    }
+  }, [locations, isMapReady, onLocationSelect]);
+
+  // Handle selected location change
+  useEffect(() => {
+    if (!mapInstanceRef.current || !selectedLocation) return;
+
+    mapInstanceRef.current.flyTo(
+      [selectedLocation.latitude, selectedLocation.longitude],
+      15,
+      { duration: 1 }
+    );
+
+    // Open popup for selected location
+    const selectedMarker = markersRef.current.find((marker) => {
+      const pos = marker.getLatLng();
+      return (
+        pos.lat === selectedLocation.latitude &&
+        pos.lng === selectedLocation.longitude
+      );
+    });
+
+    if (selectedMarker) {
+      selectedMarker.openPopup();
+    }
+  }, [selectedLocation]);
+
   return (
-    <MapContainer
-      center={center}
-      zoom={12}
+    <div
+      ref={mapRef}
       className="h-full w-full rounded-lg"
       style={{ minHeight: "400px" }}
-    >
-      <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
-      <MapUpdater location={selectedLocation} />
-      {locations.map((location) => (
-        <Marker
-          key={location.id}
-          position={[location.latitude, location.longitude]}
-          icon={defaultIcon}
-          eventHandlers={{
-            click: () => onLocationSelect?.(location),
-          }}
-        >
-          <Popup>
-            <div className="min-w-[200px]">
-              <h3 className="font-semibold text-lg mb-1">{location.name}</h3>
-              <p className="text-sm opacity-70 mb-2">{location.address}</p>
-              {location.description && (
-                <p className="text-sm mb-2">{location.description}</p>
-              )}
-              {location.phone && (
-                <p className="text-sm">
-                  <strong>Tél:</strong> {location.phone}
-                </p>
-              )}
-              {location.hours && (
-                <p className="text-sm">
-                  <strong>Horaires:</strong> {location.hours}
-                </p>
-              )}
-              {location.category && (
-                <span className="inline-block mt-2 px-2 py-1 bg-secondary text-secondary-foreground text-xs rounded">
-                  {location.category}
-                </span>
-              )}
-            </div>
-          </Popup>
-        </Marker>
-      ))}
-    </MapContainer>
+    />
   );
 };
 
