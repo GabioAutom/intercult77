@@ -54,6 +54,7 @@ export default {
           DEFAULT: "hsl(var(--footer))",
           foreground: "hsl(var(--footer-foreground))",
         },
+        "logo-bg": "hsl(var(--logo-bg))",
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",

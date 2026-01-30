@@ -27,7 +27,7 @@ const MainLayout = ({ children, pageTitle, titleBackground }: MainLayoutProps) =
   return (
     <div className="min-h-screen flex flex-col">
       {/* Mobile Header */}
-      <header className="md:hidden bg-primary p-4">
+      <header className="md:hidden bg-logo-bg p-4">
         <Link to="/" className="block text-center">
           <img src={logo} alt="Intercult77" className="h-8 mx-auto" />
         </Link>
@@ -62,7 +62,7 @@ const MainLayout = ({ children, pageTitle, titleBackground }: MainLayoutProps) =
       {/* Desktop Header Row: Logo + Navigation */}
       <header className="hidden md:flex">
         {/* Logo Area */}
-        <div className="w-72 lg:w-80 flex-shrink-0 h-40 flex items-end justify-center pb-4 bg-primary">
+        <div className="w-72 lg:w-80 flex-shrink-0 h-40 flex items-end justify-center pb-4 bg-logo-bg">
           <Link to="/" className="block">
             <img src={logo} alt="Intercult77" className="h-10" />
           </Link>
