@@ -14,7 +14,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Loader2, Lock } from "lucide-react";
+import { Loader2, Lock, UserPlus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const loginSchema = z.object({
@@ -30,7 +30,8 @@ interface AdminLoginProps {
 
 const AdminLogin = ({ onSuccess }: AdminLoginProps) => {
   const [isLoading, setIsLoading] = useState(false);
-  const { signIn } = useAuth();
+  const [isSignUp, setIsSignUp] = useState(false);
+  const { signIn, signUp } = useAuth();
   const { toast } = useToast();
 
   const form = useForm<LoginFormValues>({
@@ -44,13 +45,23 @@ const AdminLogin = ({ onSuccess }: AdminLoginProps) => {
   const onSubmit = async (data: LoginFormValues) => {
     setIsLoading(true);
     try {
-      await signIn(data.email, data.password);
-      toast({ title: "Connexion réussie" });
-      onSuccess?.();
+      if (isSignUp) {
+        await signUp(data.email, data.password);
+        toast({ 
+          title: "Compte créé avec succès",
+          description: "Vous pouvez maintenant vous connecter"
+        });
+        setIsSignUp(false);
+        form.reset();
+      } else {
+        await signIn(data.email, data.password);
+        toast({ title: "Connexion réussie" });
+        onSuccess?.();
+      }
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : "Erreur de connexion";
+      const message = error instanceof Error ? error.message : "Erreur";
       toast({
-        title: "Erreur de connexion",
+        title: isSignUp ? "Erreur d'inscription" : "Erreur de connexion",
         description: message,
         variant: "destructive",
       });
@@ -63,11 +74,17 @@ const AdminLogin = ({ onSuccess }: AdminLoginProps) => {
     <Card className="w-full max-w-md mx-auto">
       <CardHeader className="text-center">
         <div className="mx-auto w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-          <Lock className="h-6 w-6 text-primary" />
+          {isSignUp ? (
+            <UserPlus className="h-6 w-6 text-primary" />
+          ) : (
+            <Lock className="h-6 w-6 text-primary" />
+          )}
         </div>
-        <CardTitle>Administration</CardTitle>
+        <CardTitle>{isSignUp ? "Créer un compte" : "Administration"}</CardTitle>
         <CardDescription>
-          Connectez-vous pour gérer les lieux
+          {isSignUp 
+            ? "Créez votre compte administrateur" 
+            : "Connectez-vous pour gérer les lieux"}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -107,8 +124,23 @@ const AdminLogin = ({ onSuccess }: AdminLoginProps) => {
 
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-              Se connecter
+              {isSignUp ? "Créer le compte" : "Se connecter"}
             </Button>
+
+            <div className="text-center">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsSignUp(!isSignUp);
+                  form.reset();
+                }}
+                className="text-sm text-primary hover:underline"
+              >
+                {isSignUp 
+                  ? "Déjà un compte ? Se connecter" 
+                  : "Pas encore de compte ? S'inscrire"}
+              </button>
+            </div>
           </form>
         </Form>
       </CardContent>
