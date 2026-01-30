@@ -44,6 +44,9 @@
     /* Footer: Dark olive/brown */
     --footer: 45 60% 30%;
     --footer-foreground: 45 100% 50%;
+
+    /* Logo background: Dark brown #4d3c0b */
+    --logo-bg: 45 77% 17%;
   }
 }
 
