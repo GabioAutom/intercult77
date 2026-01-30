@@ -98,13 +98,13 @@ const MainLayout = ({ children, pageTitle }: MainLayoutProps) => {
           <div className="h-12 bg-background"></div>
           {/* Title area with background image and overlay */}
           <div 
-            className="flex-1 flex items-center justify-center relative bg-cover bg-center"
+            className="flex-1 relative bg-cover bg-center"
             style={{ backgroundImage: `url(${titleBackground})` }}
           >
             {/* Golden overlay */}
             <div className="absolute inset-0 bg-primary/80"></div>
-            {/* Title text */}
-            <span className="page-title-vertical relative z-10">{pageTitle}</span>
+            {/* Title text - positioned at top right */}
+            <span className="page-title-vertical absolute top-12 right-4 z-10">{pageTitle}</span>
           </div>
         </div>
 
