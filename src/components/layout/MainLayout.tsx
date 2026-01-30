@@ -2,7 +2,9 @@ import { ReactNode } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Instagram, Facebook, Linkedin } from "lucide-react";
 import defaultTitleBackground from "@/assets/title-background.jpg";
-import logo from "@/assets/logo-intercult77.png";
+
+// Logo referenced from public folder — always copied to dist as-is
+const logo = `${import.meta.env.BASE_URL}assets/logo-intercult77.png`;
 
 interface MainLayoutProps {
   children: ReactNode;
