@@ -1,8 +1,8 @@
 import MainLayout from "@/components/layout/MainLayout";
 
-const Index = () => {
+const APropos = () => {
   return (
-    <MainLayout pageTitle="Accueil">
+    <MainLayout pageTitle="À Propos">
       <div className="max-w-2xl">
         <p className="text-lg leading-relaxed text-foreground">
           <strong className="text-primary">Intercult77</strong> est une plateforme culturelle basée
@@ -33,4 +33,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default APropos;
