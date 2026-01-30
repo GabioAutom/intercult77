@@ -114,7 +114,7 @@ const MainLayout = ({ children, pageTitle, titleBackground }: MainLayoutProps) =
       </div>
 
       {/* Footer */}
-      <footer className="bg-footer py-8 px-6 md:px-12">
+      <footer className="bg-logo-bg py-8 px-6 md:px-12">
         <div className="md:ml-72 lg:ml-80">
           <div className="text-footer-foreground">
             <p className="font-semibold">
