@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Instagram, Facebook, Linkedin } from "lucide-react";
+import titleBackground from "@/assets/title-background.jpg";
 
 interface MainLayoutProps {
   children: ReactNode;
@@ -95,9 +96,15 @@ const MainLayout = ({ children, pageTitle }: MainLayoutProps) => {
         <div className="hidden md:flex md:flex-col w-72 lg:w-80 flex-shrink-0">
           {/* White gap between logo and title - matches content top padding */}
           <div className="h-12 bg-background"></div>
-          {/* Title area */}
-          <div className="flex-1 flex items-center justify-center bg-primary">
-            <span className="page-title-vertical">{pageTitle}</span>
+          {/* Title area with background image and overlay */}
+          <div 
+            className="flex-1 flex items-center justify-center relative bg-cover bg-center"
+            style={{ backgroundImage: `url(${titleBackground})` }}
+          >
+            {/* Golden overlay */}
+            <div className="absolute inset-0 bg-primary/80"></div>
+            {/* Title text */}
+            <span className="page-title-vertical relative z-10">{pageTitle}</span>
           </div>
         </div>
 
