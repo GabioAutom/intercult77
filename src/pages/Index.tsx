@@ -43,7 +43,7 @@ const sections = [
 const Index = () => {
   return (
     <MainLayout pageTitle="Accueil" hideTitleColumn>
-      <div className="space-y-0">
+      <div className="space-y-4">
         {sections.map((section, index) => (
           <HomeSection
             key={index}
