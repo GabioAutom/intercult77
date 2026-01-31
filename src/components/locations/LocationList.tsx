@@ -32,35 +32,49 @@ const LocationList = ({
             selectedLocation?.id === location.id && "bg-secondary"
           )}
         >
-          <h3 className="font-semibold text-foreground mb-1">{location.name}</h3>
-          
-          <div className="flex items-start gap-2 text-sm text-muted-foreground mb-2">
-            <MapPin className="h-4 w-4 mt-0.5 flex-shrink-0" />
-            <span>{location.address}</span>
+          <div className="flex gap-3">
+            {location.image_url && (
+              <img
+                src={location.image_url}
+                alt={location.name}
+                className="w-16 h-16 rounded-md object-cover flex-shrink-0"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).style.display = "none";
+                }}
+              />
+            )}
+            <div className="flex-1 min-w-0">
+              <h3 className="font-semibold text-foreground mb-1">{location.name}</h3>
+              
+              <div className="flex items-start gap-2 text-sm text-muted-foreground mb-2">
+                <MapPin className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                <span className="truncate">{location.address}</span>
+              </div>
+
+              {location.phone && (
+                <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
+                  <Phone className="h-4 w-4 flex-shrink-0" />
+                  <span>{location.phone}</span>
+                </div>
+              )}
+
+              {location.hours && (
+                <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
+                  <Clock className="h-4 w-4 flex-shrink-0" />
+                  <span>{location.hours}</span>
+                </div>
+              )}
+
+              {location.category && (
+                <div className="flex items-center gap-2 mt-2">
+                  <Tag className="h-3 w-3 text-primary" />
+                  <span className="text-xs text-primary font-medium">
+                    {location.category}
+                  </span>
+                </div>
+              )}
+            </div>
           </div>
-
-          {location.phone && (
-            <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
-              <Phone className="h-4 w-4 flex-shrink-0" />
-              <span>{location.phone}</span>
-            </div>
-          )}
-
-          {location.hours && (
-            <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
-              <Clock className="h-4 w-4 flex-shrink-0" />
-              <span>{location.hours}</span>
-            </div>
-          )}
-
-          {location.category && (
-            <div className="flex items-center gap-2 mt-2">
-              <Tag className="h-3 w-3 text-primary" />
-              <span className="text-xs text-primary font-medium">
-                {location.category}
-              </span>
-            </div>
-          )}
         </button>
       ))}
     </div>
