@@ -63,6 +63,14 @@
     @apply bg-background text-foreground font-sans antialiased;
     font-family: 'Montserrat', sans-serif;
   }
+
+  ul {
+    @apply list-disc list-inside;
+  }
+
+  ol {
+    @apply list-decimal list-inside;
+  }
 }
 
 @layer components {
