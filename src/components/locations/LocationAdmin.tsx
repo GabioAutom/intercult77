@@ -300,12 +300,13 @@ const LocationFormDialog = ({
               >
                 Annuler
               </Button>
-              <Button 
-                type="submit" 
+              <Button
+                type="button"
                 disabled={isPending}
                 onClick={(e) => {
-                  // Prevent any default behavior and let form handle submit
-                  e.stopPropagation();
+                  e.preventDefault();
+                  // Use the exact same submit path as the form (consistent with pressing Enter)
+                  void form.handleSubmit(onSubmit)();
                 }}
               >
                 {isPending && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
