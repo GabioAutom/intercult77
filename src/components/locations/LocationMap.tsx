@@ -92,6 +92,7 @@ const LocationMap = ({
 
       const popupContent = `
         <div style="min-width: 200px;">
+          ${location.image_url ? `<img src="${location.image_url}" alt="${location.name}" style="width: 100%; height: 120px; object-fit: cover; border-radius: 6px; margin-bottom: 8px;" onerror="this.style.display='none'" />` : ""}
           <h3 style="font-weight: 600; font-size: 1.1rem; margin-bottom: 4px;">${location.name}</h3>
           <p style="font-size: 0.875rem; opacity: 0.7; margin-bottom: 8px;">${location.address}</p>
           ${location.description ? `<p style="font-size: 0.875rem; margin-bottom: 8px;">${location.description}</p>` : ""}
