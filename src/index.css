@@ -81,6 +81,12 @@
     @apply text-4xl md:text-5xl lg:text-6xl font-bold tracking-widest text-primary-foreground uppercase;
   }
 
+  .writing-vertical {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+  }
+
   .nav-link {
     @apply text-sm font-medium tracking-wider uppercase text-primary hover:opacity-70 transition-opacity duration-200;
   }
