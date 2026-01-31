@@ -62,103 +62,108 @@ const Contact = () => {
 
   return (
     <MainLayout pageTitle="Contact">
-      <div className="max-w-2xl">
-        <h2 className="text-2xl font-semibold text-primary mb-6">Contactez-nous</h2>
+      <div className="max-w-5xl">
+        <h2 className="text-2xl font-semibold text-primary mb-8">Contactez-nous</h2>
         
-        {/* Contact Info */}
-        <div className="space-y-4 text-lg text-foreground mb-10">
-          <p>
-            <strong>Adresse:</strong><br />
-            Av. Ducpétiaux 133A, 1060 Bruxelles
-          </p>
-          <p>
-            <strong>Téléphone:</strong><br />
-            +32 474 44 30 07
-          </p>
-          <p>
-            <strong>Email:</strong><br />
-            info@intercult77.be
-          </p>
-        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+          {/* Left Column - Contact Form */}
+          <div>
+            <h3 className="text-xl font-semibold text-primary mb-6">Envoyez-nous un message</h3>
+            
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Nom</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Votre nom" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-        {/* Contact Form */}
-        <div className="border-t border-border pt-8">
-          <h3 className="text-xl font-semibold text-primary mb-6">Envoyez-nous un message</h3>
-          
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Nom</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Votre nom" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input type="email" placeholder="votre@email.com" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input type="email" placeholder="votre@email.com" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                <FormField
+                  control={form.control}
+                  name="subject"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Sujet</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Sujet de votre message" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <FormField
-                control={form.control}
-                name="subject"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Sujet</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Sujet de votre message" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                <FormField
+                  control={form.control}
+                  name="message"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Message</FormLabel>
+                      <FormControl>
+                        <Textarea 
+                          placeholder="Votre message..." 
+                          className="min-h-[150px]"
+                          {...field} 
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <FormField
-                control={form.control}
-                name="message"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Message</FormLabel>
-                    <FormControl>
-                      <Textarea 
-                        placeholder="Votre message..." 
-                        className="min-h-[150px]"
-                        {...field} 
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                <Button type="submit" disabled={isSubmitting} className="w-full md:w-auto">
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Envoi en cours...
+                    </>
+                  ) : (
+                    "Envoyer le message"
+                  )}
+                </Button>
+              </form>
+            </Form>
+          </div>
 
-              <Button type="submit" disabled={isSubmitting} className="w-full md:w-auto">
-                {isSubmitting ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Envoi en cours...
-                  </>
-                ) : (
-                  "Envoyer le message"
-                )}
-              </Button>
-            </form>
-          </Form>
+          {/* Right Column - Contact Info */}
+          <div>
+            <h3 className="text-xl font-semibold text-primary mb-6">Nos coordonnées</h3>
+            <div className="space-y-6 text-lg text-foreground">
+              <p>
+                <strong>Adresse:</strong><br />
+                Av. Ducpétiaux 133A, 1060 Bruxelles
+              </p>
+              <p>
+                <strong>Téléphone:</strong><br />
+                +32 474 44 30 07
+              </p>
+              <p>
+                <strong>Email:</strong><br />
+                info@intercult77.be
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </MainLayout>
