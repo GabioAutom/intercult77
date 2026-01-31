@@ -37,8 +37,8 @@ const handler = async (req: Request): Promise<Response> => {
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: "Intecult77 Contact <onboarding@resend.dev>",
-        to: ["gabioscifi@gmail.com"],
+        from: "Intercult77 Contact <noreply@intercult77.be>",
+        to: ["info@intercult77.be"],
         subject: `[Contact Intecult77] ${subject}`,
         html: `
           <h2>Nouveau message de contact</h2>
