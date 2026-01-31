@@ -25,24 +25,41 @@ const withTimeout = async <T,>(
   }
 };
 
+// Sanitize search query to prevent injection and limit length
+const sanitizeSearchQuery = (query: string): string => {
+  // Limit to 100 characters
+  const trimmed = query.trim().slice(0, 100);
+  // Escape special PostgREST characters that could affect query parsing
+  // Remove characters that could break the filter syntax: commas, parentheses, quotes
+  return trimmed.replace(/[,()'"\\%_]/g, '');
+};
+
 export const useLocations = (searchQuery?: string) => {
   return useQuery({
     queryKey: ["locations", searchQuery],
     queryFn: async () => {
-      let query = supabase
-        .from("locations")
-        .select("*")
-        .order("name", { ascending: true });
+      try {
+        let query = supabase
+          .from("locations")
+          .select("*")
+          .order("name", { ascending: true });
 
-      if (searchQuery && searchQuery.trim()) {
-        query = query.or(
-          `name.ilike.%${searchQuery}%,address.ilike.%${searchQuery}%,category.ilike.%${searchQuery}%`
-        );
+        if (searchQuery && searchQuery.trim()) {
+          const sanitized = sanitizeSearchQuery(searchQuery);
+          if (sanitized.length > 0) {
+            query = query.or(
+              `name.ilike.%${sanitized}%,address.ilike.%${sanitized}%,category.ilike.%${sanitized}%`
+            );
+          }
+        }
+
+        const { data, error } = await query;
+        if (error) throw error;
+        return data as Location[];
+      } catch (error) {
+        console.error("Error fetching locations:", error);
+        throw error;
       }
-
-      const { data, error } = await query;
-      if (error) throw error;
-      return data as Location[];
     },
   });
 };
