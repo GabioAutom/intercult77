@@ -7,7 +7,6 @@ interface HomeSectionProps {
   linkTo: string;
   linkText?: string;
   imageUrl: string;
-  reverse?: boolean;
 }
 
 const HomeSection = ({
@@ -19,24 +18,24 @@ const HomeSection = ({
   imageUrl,
 }: HomeSectionProps) => {
   return (
-    <section className="flex flex-col md:flex-row gap-6 md:gap-12">
-      {/* Image with vertical label */}
-      <div className="relative w-full md:w-80 lg:w-96 flex-shrink-0">
+    <section className="flex flex-col md:flex-row">
+      {/* Image with vertical label - matching the title column style */}
+      <div className="w-full md:w-72 lg:w-80 flex-shrink-0">
         <div 
-          className="w-full h-64 md:h-80 bg-cover bg-center relative"
+          className="w-full h-64 md:h-72 lg:h-80 bg-cover bg-center relative"
           style={{ backgroundImage: `url(${imageUrl})` }}
         >
-          {/* Golden overlay */}
-          <div className="absolute inset-0 bg-primary/70"></div>
-          {/* Vertical label */}
-          <span className="absolute top-8 right-4 text-primary-foreground font-light text-2xl md:text-3xl tracking-[0.3em] uppercase writing-vertical z-10">
+          {/* Golden overlay - same as title column */}
+          <div className="absolute inset-0 bg-primary/80"></div>
+          {/* Vertical label - same style as page title */}
+          <span className="page-title-vertical absolute top-8 right-4 z-10 text-3xl md:text-4xl lg:text-5xl">
             {verticalLabel}
           </span>
         </div>
       </div>
 
-      {/* Content */}
-      <div className="flex-1 py-4 md:py-8">
+      {/* Content - matching the content area spacing */}
+      <div className="flex-1 px-6 md:px-12 lg:px-16 py-8 md:py-12">
         <h2 className="text-2xl md:text-3xl font-light text-foreground mb-4">
           {title}
         </h2>

@@ -10,6 +10,7 @@ interface MainLayoutProps {
   children: ReactNode;
   pageTitle: string;
   titleBackground?: string;
+  hideTitleColumn?: boolean;
 }
 
 const navigation = [
@@ -22,7 +23,7 @@ const navigation = [
   { name: "CONTACT", href: "/contact" },
 ];
 
-const MainLayout = ({ children, pageTitle, titleBackground }: MainLayoutProps) => {
+const MainLayout = ({ children, pageTitle, titleBackground, hideTitleColumn = false }: MainLayoutProps) => {
   const location = useLocation();
   const backgroundImage = titleBackground || defaultTitleBackground;
 
@@ -93,24 +94,26 @@ const MainLayout = ({ children, pageTitle, titleBackground }: MainLayoutProps) =
 
       {/* Main Content Area */}
       <div className="flex-1 flex">
-        {/* Left Column: Gap + Page Title Vertical - Desktop only */}
-        <div className="hidden md:flex md:flex-col w-72 lg:w-80 flex-shrink-0">
-          {/* White gap between logo and title - matches content top padding */}
-          <div className="h-12 bg-background"></div>
-          {/* Title area with background image and overlay */}
-          <div 
-            className="flex-1 relative bg-cover bg-center"
-            style={{ backgroundImage: `url(${backgroundImage})` }}
-          >
-            {/* Golden overlay */}
-            <div className="absolute inset-0 bg-primary/80"></div>
-            {/* Title text - positioned at top right */}
-            <span className="page-title-vertical absolute top-12 right-4 z-10">{pageTitle}</span>
+        {/* Left Column: Gap + Page Title Vertical - Desktop only (hidden when hideTitleColumn is true) */}
+        {!hideTitleColumn && (
+          <div className="hidden md:flex md:flex-col w-72 lg:w-80 flex-shrink-0">
+            {/* White gap between logo and title - matches content top padding */}
+            <div className="h-12 bg-background"></div>
+            {/* Title area with background image and overlay */}
+            <div 
+              className="flex-1 relative bg-cover bg-center"
+              style={{ backgroundImage: `url(${backgroundImage})` }}
+            >
+              {/* Golden overlay */}
+              <div className="absolute inset-0 bg-primary/80"></div>
+              {/* Title text - positioned at top right */}
+              <span className="page-title-vertical absolute top-12 right-4 z-10">{pageTitle}</span>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Right Column: Content - top padding matches the gap */}
-        <main className="flex-1 px-6 md:px-12 lg:px-16 pt-12 pb-8 md:pb-12 animate-fade-in">
+        <main className={`flex-1 px-6 md:px-12 lg:px-16 pt-12 pb-8 md:pb-12 animate-fade-in ${hideTitleColumn ? 'md:ml-0' : ''}`}>
           {children}
         </main>
       </div>
