@@ -30,7 +30,8 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log("Sending contact email from:", email);
 
-    const res = await fetch("https://api.resend.com/emails", {
+    // Send email to admin
+    const adminRes = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -39,7 +40,7 @@ const handler = async (req: Request): Promise<Response> => {
       body: JSON.stringify({
         from: "Intercult77 Contact <noreply@intercult77.org>",
         to: ["fabio@fotogabio.com"],
-        subject: `[Contact Intecult77] ${subject}`,
+        subject: `[Contact Intercult77] ${subject}`,
         html: `
           <h2>Nouveau message de contact</h2>
           <p><strong>Nom:</strong> ${name}</p>
@@ -53,14 +54,48 @@ const handler = async (req: Request): Promise<Response> => {
       }),
     });
 
-    if (!res.ok) {
-      const errorData = await res.text();
-      console.error("Resend API error:", errorData);
-      throw new Error(`Failed to send email: ${errorData}`);
+    if (!adminRes.ok) {
+      const errorData = await adminRes.text();
+      console.error("Resend API error (admin):", errorData);
+      throw new Error(`Failed to send email to admin: ${errorData}`);
     }
 
-    const data = await res.json();
-    console.log("Email sent successfully:", data);
+    const adminData = await adminRes.json();
+    console.log("Admin email sent successfully:", adminData);
+
+    // Send acknowledgment email to sender
+    const ackRes = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${RESEND_API_KEY}`,
+      },
+      body: JSON.stringify({
+        from: "Intercult77 <noreply@intercult77.org>",
+        to: [email],
+        subject: "Confirmation de réception - Intercult77",
+        html: `
+          <h2>Merci pour votre message !</h2>
+          <p>Bonjour ${name},</p>
+          <p>Nous avons bien reçu votre message concernant : <strong>${subject}</strong></p>
+          <p>Notre équipe vous répondra dans les plus brefs délais.</p>
+          <hr />
+          <p><em>Récapitulatif de votre message :</em></p>
+          <p>${message.replace(/\n/g, "<br />")}</p>
+          <hr />
+          <p>Cordialement,<br />L'équipe Intercult77</p>
+        `,
+      }),
+    });
+
+    if (!ackRes.ok) {
+      const errorData = await ackRes.text();
+      console.error("Resend API error (acknowledgment):", errorData);
+      // Don't throw - admin email was sent successfully
+    } else {
+      const ackData = await ackRes.json();
+      console.log("Acknowledgment email sent successfully:", ackData);
+    }
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
