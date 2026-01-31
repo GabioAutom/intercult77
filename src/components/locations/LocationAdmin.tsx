@@ -300,7 +300,14 @@ const LocationFormDialog = ({
               >
                 Annuler
               </Button>
-              <Button type="submit" disabled={isPending}>
+              <Button 
+                type="submit" 
+                disabled={isPending}
+                onClick={(e) => {
+                  // Prevent any default behavior and let form handle submit
+                  e.stopPropagation();
+                }}
+              >
                 {isPending && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
                 {isEditing ? "Enregistrer" : "Créer"}
               </Button>
