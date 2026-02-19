@@ -4,8 +4,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Play, ImageIcon } from "lucide-react";
 
-const MediaGallery = () => {
-  const { data: media, isLoading } = useMedia();
+const MediaGallery = ({ category }: { category?: string }) => {
+  const { data: media, isLoading } = useMedia(category);
   const [selected, setSelected] = useState<MediaItem | null>(null);
 
   if (isLoading) {

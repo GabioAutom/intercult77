@@ -19,6 +19,7 @@ const MediaFormDialog = ({ media, onClose }: { media?: MediaItem; onClose?: () =
   const [description, setDescription] = useState(media?.description || "");
   const [mediaType, setMediaType] = useState<"image" | "video">(media?.media_type || "image");
   const [videoUrl, setVideoUrl] = useState(media?.video_url || "");
+  const [category, setCategory] = useState(media?.category || "medias");
   const [file, setFile] = useState<File | null>(null);
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -56,6 +57,7 @@ const MediaFormDialog = ({ media, onClose }: { media?: MediaItem; onClose?: () =
           title,
           description: description || null,
           media_type: mediaType,
+          category,
           ...(fileUrl && { file_url: fileUrl }),
           thumbnail_url: thumbnailUrl || null,
           video_url: mediaType === "video" ? videoUrl || null : null,
@@ -66,6 +68,7 @@ const MediaFormDialog = ({ media, onClose }: { media?: MediaItem; onClose?: () =
           title,
           description: description || undefined,
           media_type: mediaType,
+          category,
           file_url: fileUrl,
           thumbnail_url: thumbnailUrl || undefined,
           video_url: mediaType === "video" ? videoUrl || undefined : undefined,
@@ -119,6 +122,16 @@ const MediaFormDialog = ({ media, onClose }: { media?: MediaItem; onClose?: () =
               <SelectContent>
                 <SelectItem value="image">Image</SelectItem>
                 <SelectItem value="video">Vidéo</SelectItem>
+              </SelectContent>
+          </Select>
+          </div>
+          <div>
+            <Label>Galerie</Label>
+            <Select value={category} onValueChange={setCategory}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="medias">Médias</SelectItem>
+                <SelectItem value="videos-cellule">Videos à La Cellule</SelectItem>
               </SelectContent>
             </Select>
           </div>
