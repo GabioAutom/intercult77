@@ -10,7 +10,7 @@ const Medias = () => {
           Photos, vidéos et articles de presse sur nos événements
           et activités culturelles.
         </p>
-        <MediaGallery />
+        <MediaGallery category="medias" />
       </div>
     </MainLayout>
   );

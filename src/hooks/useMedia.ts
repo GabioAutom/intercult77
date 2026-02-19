@@ -9,21 +9,27 @@ export interface MediaItem {
   file_url: string;
   thumbnail_url: string | null;
   video_url: string | null;
+  category: string;
   sort_order: number;
   is_visible: boolean;
   created_at: string;
   updated_at: string;
 }
 
-export const useMedia = () => {
+export const useMedia = (category?: string) => {
   return useQuery({
-    queryKey: ["media"],
+    queryKey: ["media", category],
     queryFn: async () => {
-      const { data, error } = await supabase
+      let query = supabase
         .from("media")
-        .select("*")
+        .select("*");
+      if (category) {
+        query = query.eq("category", category);
+      }
+      query = query
         .order("sort_order", { ascending: true })
         .order("created_at", { ascending: false });
+      const { data, error } = await query;
       if (error) throw error;
       return data as MediaItem[];
     },
@@ -40,6 +46,7 @@ export const useCreateMedia = () => {
       file_url: string;
       thumbnail_url?: string;
       video_url?: string;
+      category?: string;
     }) => {
       const { data, error } = await supabase
         .from("media")

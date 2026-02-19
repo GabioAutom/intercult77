@@ -11,6 +11,7 @@ import Medias from "./pages/Medias";
 import Liens from "./pages/Liens";
 import Contact from "./pages/Contact";
 import MediasAdmin from "./pages/MediasAdmin";
+import VideosCellule from "./pages/VideosCellule";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -28,6 +29,7 @@ const App = () => (
           <Route path="/lieux" element={<Lieux />} />
           <Route path="/medias" element={<Medias />} />
           <Route path="/medias/admin" element={<MediasAdmin />} />
+          <Route path="/videos-cellule" element={<VideosCellule />} />
           <Route path="/liens" element={<Liens />} />
           <Route path="/contact" element={<Contact />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

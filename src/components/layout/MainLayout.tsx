@@ -19,6 +19,7 @@ const navigation = [
   { name: "ACTIVITÉS", href: "/activites" },
   { name: "LIEUX", href: "/lieux" },
   { name: "MÉDIAS", href: "/medias" },
+  { name: "VIDEOS À LA CELLULE", href: "/videos-cellule" },
   { name: "LIENS", href: "/liens" },
   { name: "CONTACT", href: "/contact" },
 ];

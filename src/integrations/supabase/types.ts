@@ -61,6 +61,7 @@ export type Database = {
       }
       media: {
         Row: {
+          category: string
           created_at: string
           description: string | null
           file_url: string
@@ -74,6 +75,7 @@ export type Database = {
           video_url: string | null
         }
         Insert: {
+          category?: string
           created_at?: string
           description?: string | null
           file_url: string
@@ -87,6 +89,7 @@ export type Database = {
           video_url?: string | null
         }
         Update: {
+          category?: string
           created_at?: string
           description?: string | null
           file_url?: string
