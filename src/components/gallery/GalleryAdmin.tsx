@@ -317,6 +317,7 @@ const GalleryAdmin = ({ galleryType, galleryLabel }: GalleryAdminProps) => {
             </div>
           </div>
 
+          {images.length === 0 ? (
             <p className="text-sm text-muted-foreground text-center py-12">
               Aucun fichier. Uploadez des images ou vidéos.
             </p>
