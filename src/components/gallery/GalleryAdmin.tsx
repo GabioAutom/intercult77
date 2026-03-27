@@ -40,6 +40,9 @@ const GalleryAdmin = ({ galleryType, galleryLabel }: GalleryAdminProps) => {
   const { data: images = [] } = useAlbumImages(selectedAlbum);
   const [newAlbumTitle, setNewAlbumTitle] = useState("");
   const [uploading, setUploading] = useState(false);
+  const [youtubeUrl, setYoutubeUrl] = useState("");
+  const [youtubeThumbnail, setYoutubeThumbnail] = useState("");
+  const [youtubeTitle, setYoutubeTitle] = useState("");
   const createAlbum = useCreateAlbum();
   const deleteAlbum = useDeleteAlbum();
   const deleteImage = useDeleteImage();
