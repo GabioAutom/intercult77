@@ -114,7 +114,7 @@ const MainLayout = ({ children, pageTitle, titleBackground, hideTitleColumn = fa
         )}
 
         {/* Right Column: Content - top padding matches the gap */}
-        <main className={`flex-1 px-6 md:px-12 lg:px-16 pt-12 pb-8 md:pb-12 animate-fade-in ${hideTitleColumn ? 'md:ml-0' : ''}`}>
+        <main className={`flex-1 pt-12 pb-8 md:pb-12 animate-fade-in ${hideTitleColumn ? 'md:ml-0 md:px-0' : 'px-6 md:px-12 lg:px-16'}`}>
           {children}
         </main>
       </div>
