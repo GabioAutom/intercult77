@@ -1,5 +1,5 @@
 import MainLayout from "@/components/layout/MainLayout";
-import MediaGallery from "@/components/media/MediaGallery";
+import AlbumGallery from "@/components/gallery/AlbumGallery";
 
 const Medias = () => {
   return (
@@ -10,7 +10,7 @@ const Medias = () => {
           Photos, vidéos et articles de presse sur nos événements
           et activités culturelles.
         </p>
-        <MediaGallery category="medias" />
+        <AlbumGallery galleryType="medias" />
       </div>
     </MainLayout>
   );
