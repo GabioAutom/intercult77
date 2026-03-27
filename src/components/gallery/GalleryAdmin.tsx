@@ -26,12 +26,19 @@ import {
   FolderPlus,
   Settings,
   Play,
+  Video,
+  Link,
 } from "lucide-react";
 
 interface GalleryAdminProps {
   galleryType: string;
   galleryLabel: string;
 }
+
+const extractYoutubeId = (url: string): string | null => {
+  const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([a-zA-Z0-9_-]{11})/);
+  return match ? match[1] : null;
+};
 
 const GalleryAdmin = ({ galleryType, galleryLabel }: GalleryAdminProps) => {
   const { user, isAdmin, loading: authLoading, signOut } = useAuth();
@@ -40,6 +47,9 @@ const GalleryAdmin = ({ galleryType, galleryLabel }: GalleryAdminProps) => {
   const { data: images = [] } = useAlbumImages(selectedAlbum);
   const [newAlbumTitle, setNewAlbumTitle] = useState("");
   const [uploading, setUploading] = useState(false);
+  const [youtubeUrl, setYoutubeUrl] = useState("");
+  const [youtubeThumbnail, setYoutubeThumbnail] = useState("");
+  const [youtubeTitle, setYoutubeTitle] = useState("");
   const createAlbum = useCreateAlbum();
   const deleteAlbum = useDeleteAlbum();
   const deleteImage = useDeleteImage();
@@ -132,6 +142,46 @@ const GalleryAdmin = ({ galleryType, galleryLabel }: GalleryAdminProps) => {
     queryClient.invalidateQueries({ queryKey: ["gallery-images", selectedAlbum] });
     toast({ title: `${count} fichier(s) uploadé(s)` });
     e.target.value = "";
+  };
+
+  const handleAddYoutube = async () => {
+    if (!selectedAlbum || !youtubeUrl.trim()) return;
+    const videoId = extractYoutubeId(youtubeUrl);
+    if (!videoId) {
+      toast({ title: "URL invalide", description: "Collez un lien YouTube valide.", variant: "destructive" });
+      return;
+    }
+    const embedUrl = `https://www.youtube.com/embed/${videoId}`;
+    const thumbnail = youtubeThumbnail.trim() || `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+    const title = youtubeTitle.trim() || `Video ${videoId}`;
+
+    try {
+      // Upload YouTube thumbnail as file_path placeholder
+      const response = await fetch(thumbnail);
+      const blob = await response.blob();
+      const file = new File([blob], `${videoId}.jpg`, { type: "image/jpeg" });
+      const filePath = await uploadGalleryFile(selectedAlbum, file);
+
+      const { error } = await supabase.from("gallery_images").insert({
+        album_id: selectedAlbum,
+        file_path: filePath,
+        alt: title,
+        caption: "",
+        media_type: "video",
+        video_url: embedUrl,
+        sort_order: images.length,
+      });
+      if (error) throw error;
+
+      queryClient.invalidateQueries({ queryKey: ["gallery-images", selectedAlbum] });
+      setYoutubeUrl("");
+      setYoutubeTitle("");
+      setYoutubeThumbnail("");
+      toast({ title: "Vidéo YouTube ajoutée" });
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Erreur";
+      toast({ title: "Erreur", description: msg, variant: "destructive" });
+    }
   };
 
   return (
@@ -230,6 +280,41 @@ const GalleryAdmin = ({ galleryType, galleryLabel }: GalleryAdminProps) => {
                 className="hidden"
               />
             </label>
+          </div>
+
+          {/* Add YouTube video */}
+          <div className="bg-muted/30 border border-border rounded-lg p-4 mb-4">
+            <h5 className="font-medium text-sm mb-3 flex items-center gap-2">
+              <Video className="w-4 h-4 text-primary" />
+              Ajouter une vidéo YouTube
+            </h5>
+            <div className="space-y-3">
+              <div>
+                <Label className="text-xs">URL YouTube *</Label>
+                <Input
+                  value={youtubeUrl}
+                  onChange={(e) => setYoutubeUrl(e.target.value)}
+                  placeholder="https://www.youtube.com/watch?v=..."
+                />
+              </div>
+              <div>
+                <Label className="text-xs">Titre (optionnel)</Label>
+                <Input
+                  value={youtubeTitle}
+                  onChange={(e) => setYoutubeTitle(e.target.value)}
+                  placeholder="Titre de la vidéo"
+                />
+              </div>
+              <Button
+                onClick={handleAddYoutube}
+                disabled={!youtubeUrl.trim()}
+                variant="secondary"
+                className="gap-2"
+              >
+                <Link className="w-4 h-4" />
+                Ajouter la vidéo
+              </Button>
+            </div>
           </div>
 
           {images.length === 0 ? (
