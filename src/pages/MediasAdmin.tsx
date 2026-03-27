@@ -1,11 +1,13 @@
 import MainLayout from "@/components/layout/MainLayout";
-import MediaAdmin from "@/components/media/MediaAdmin";
+import GalleryAdminComponent from "@/components/gallery/GalleryAdmin";
 
 const MediasAdmin = () => {
   return (
     <MainLayout pageTitle="Admin Médias">
-      <div className="max-w-4xl">
-        <MediaAdmin />
+      <div className="max-w-5xl space-y-12">
+        <GalleryAdminComponent galleryType="medias" galleryLabel="Médias" />
+        <hr className="border-border" />
+        <GalleryAdminComponent galleryType="videos-cellule" galleryLabel="Videos à La Cellule" />
       </div>
     </MainLayout>
   );

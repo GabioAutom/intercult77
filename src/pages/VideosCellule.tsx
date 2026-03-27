@@ -1,5 +1,5 @@
 import MainLayout from "@/components/layout/MainLayout";
-import MediaGallery from "@/components/media/MediaGallery";
+import AlbumGallery from "@/components/gallery/AlbumGallery";
 
 const VideosCellule = () => {
   return (
@@ -9,7 +9,7 @@ const VideosCellule = () => {
         <p className="text-lg leading-relaxed text-foreground mb-8">
           Découvrez les vidéos de nos événements à La Cellule.
         </p>
-        <MediaGallery category="videos-cellule" />
+        <AlbumGallery galleryType="videos-cellule" />
       </div>
     </MainLayout>
   );
