@@ -26,6 +26,8 @@ import {
   FolderPlus,
   Settings,
   Play,
+  Video,
+  Link,
 } from "lucide-react";
 
 interface GalleryAdminProps {
