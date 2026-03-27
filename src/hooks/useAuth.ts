@@ -27,17 +27,18 @@ export const useAuth = () => {
   const checkAdmin = useCallback(async (userId: string) => {
     try {
       const data = await withTimeout(
-        supabase
-          .from("user_roles")
-          .select("role")
-          .eq("user_id", userId)
-          .eq("role", "admin")
-          .maybeSingle()
-          .then(({ data, error }) => {
-            if (error) throw error;
-            return data;
-          })
-          .catch(() => null),
+        (async () => {
+          const { data, error } = await supabase
+            .from("user_roles")
+            .select("role")
+            .eq("user_id", userId)
+            .eq("role", "admin")
+            .maybeSingle();
+
+          if (error) throw error;
+
+          return data;
+        })(),
         null,
       );
 
