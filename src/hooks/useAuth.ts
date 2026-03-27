@@ -24,25 +24,18 @@ export const useAuth = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  const checkAdmin = useCallback(async (userId: string) => {
+  const checkAdmin = useCallback(async () => {
     try {
-      const data = await withTimeout(
+      return await withTimeout(
         (async () => {
-          const { data, error } = await supabase
-            .from("user_roles")
-            .select("role")
-            .eq("user_id", userId)
-            .eq("role", "admin")
-            .maybeSingle();
+          const { data, error } = await supabase.rpc("is_admin");
 
           if (error) throw error;
 
-          return data;
+          return Boolean(data);
         })(),
-        null,
+        false,
       );
-
-      return !!data;
     } catch {
       return false;
     }
@@ -62,7 +55,8 @@ export const useAuth = () => {
         return;
       }
 
-      const admin = await checkAdmin(currentUser.id);
+      setLoading(true);
+      const admin = await checkAdmin();
 
       if (!isMounted) return;
 
@@ -70,17 +64,20 @@ export const useAuth = () => {
       setLoading(false);
     };
 
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      void syncAuthState(session?.user ?? null);
+    });
+
     void withTimeout(supabase.auth.getSession().catch(() => null), null)
       .then((result) => syncAuthState(result?.data.session?.user ?? null))
       .catch(() => {
-        if (isMounted) setLoading(false);
+        if (isMounted) {
+          setIsAdmin(false);
+          setLoading(false);
+        }
       });
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        void syncAuthState(session?.user ?? null);
-      }
-    );
 
     return () => {
       isMounted = false;
