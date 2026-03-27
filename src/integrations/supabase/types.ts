@@ -14,6 +14,77 @@ export type Database = {
   }
   public: {
     Tables: {
+      gallery_albums: {
+        Row: {
+          created_at: string
+          gallery_type: string
+          id: string
+          slug: string
+          sort_order: number
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          gallery_type?: string
+          id?: string
+          slug: string
+          sort_order?: number
+          title: string
+        }
+        Update: {
+          created_at?: string
+          gallery_type?: string
+          id?: string
+          slug?: string
+          sort_order?: number
+          title?: string
+        }
+        Relationships: []
+      }
+      gallery_images: {
+        Row: {
+          album_id: string
+          alt: string
+          caption: string | null
+          created_at: string
+          file_path: string
+          id: string
+          media_type: string
+          sort_order: number
+          video_url: string | null
+        }
+        Insert: {
+          album_id: string
+          alt?: string
+          caption?: string | null
+          created_at?: string
+          file_path: string
+          id?: string
+          media_type?: string
+          sort_order?: number
+          video_url?: string | null
+        }
+        Update: {
+          album_id?: string
+          alt?: string
+          caption?: string | null
+          created_at?: string
+          file_path?: string
+          id?: string
+          media_type?: string
+          sort_order?: number
+          video_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gallery_images_album_id_fkey"
+            columns: ["album_id"]
+            isOneToOne: false
+            referencedRelation: "gallery_albums"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       locations: {
         Row: {
           address: string
