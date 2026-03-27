@@ -35,6 +35,11 @@ interface GalleryAdminProps {
   galleryLabel: string;
 }
 
+const extractYoutubeId = (url: string): string | null => {
+  const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([a-zA-Z0-9_-]{11})/);
+  return match ? match[1] : null;
+};
+
 const GalleryAdmin = ({ galleryType, galleryLabel }: GalleryAdminProps) => {
   const { user, isAdmin, loading: authLoading, signOut } = useAuth();
   const { data: albums = [], isLoading: albumsLoading } = useAlbums(galleryType);
