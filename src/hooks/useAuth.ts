@@ -2,6 +2,23 @@ import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
 
+const AUTH_TIMEOUT_MS = 5000;
+
+const withTimeout = async <T,>(promise: Promise<T>, fallback: T): Promise<T> => {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+
+  try {
+    return await Promise.race([
+      promise,
+      new Promise<T>((resolve) => {
+        timer = setTimeout(() => resolve(fallback), AUTH_TIMEOUT_MS);
+      }),
+    ]);
+  } finally {
+    if (timer) clearTimeout(timer);
+  }
+};
+
 export const useAuth = () => {
   const [user, setUser] = useState<User | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -9,46 +26,65 @@ export const useAuth = () => {
 
   const checkAdmin = useCallback(async (userId: string) => {
     try {
-      const { data } = await supabase
-        .from("user_roles")
-        .select("role")
-        .eq("user_id", userId)
-        .eq("role", "admin")
-        .maybeSingle();
-      setIsAdmin(!!data);
+      const data = await withTimeout(
+        supabase
+          .from("user_roles")
+          .select("role")
+          .eq("user_id", userId)
+          .eq("role", "admin")
+          .maybeSingle()
+          .then(({ data, error }) => {
+            if (error) throw error;
+            return data;
+          })
+          .catch(() => null),
+        null,
+      );
+
+      return !!data;
     } catch {
-      setIsAdmin(false);
+      return false;
     }
   }, []);
 
   useEffect(() => {
-    // Get initial session
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
-      const currentUser = session?.user ?? null;
-      setUser(currentUser);
-      if (currentUser) {
-        await checkAdmin(currentUser.id);
-      }
-      setLoading(false);
-    }).catch(() => {
-      setLoading(false);
-    });
+    let isMounted = true;
 
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (_event, session) => {
-        const currentUser = session?.user ?? null;
-        setUser(currentUser);
-        if (currentUser) {
-          await checkAdmin(currentUser.id);
-        } else {
-          setIsAdmin(false);
-        }
+    const syncAuthState = async (currentUser: User | null) => {
+      if (!isMounted) return;
+
+      setUser(currentUser);
+
+      if (!currentUser) {
+        setIsAdmin(false);
         setLoading(false);
+        return;
+      }
+
+      const admin = await checkAdmin(currentUser.id);
+
+      if (!isMounted) return;
+
+      setIsAdmin(admin);
+      setLoading(false);
+    };
+
+    void withTimeout(supabase.auth.getSession().catch(() => null), null)
+      .then((result) => syncAuthState(result?.data.session?.user ?? null))
+      .catch(() => {
+        if (isMounted) setLoading(false);
+      });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        void syncAuthState(session?.user ?? null);
       }
     );
 
-    return () => subscription.unsubscribe();
+    return () => {
+      isMounted = false;
+      subscription.unsubscribe();
+    };
   }, [checkAdmin]);
 
   const signIn = async (email: string, password: string) => {
