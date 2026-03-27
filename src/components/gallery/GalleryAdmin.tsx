@@ -144,6 +144,46 @@ const GalleryAdmin = ({ galleryType, galleryLabel }: GalleryAdminProps) => {
     e.target.value = "";
   };
 
+  const handleAddYoutube = async () => {
+    if (!selectedAlbum || !youtubeUrl.trim()) return;
+    const videoId = extractYoutubeId(youtubeUrl);
+    if (!videoId) {
+      toast({ title: "URL invalide", description: "Collez un lien YouTube valide.", variant: "destructive" });
+      return;
+    }
+    const embedUrl = `https://www.youtube.com/embed/${videoId}`;
+    const thumbnail = youtubeThumbnail.trim() || `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+    const title = youtubeTitle.trim() || `Video ${videoId}`;
+
+    try {
+      // Upload YouTube thumbnail as file_path placeholder
+      const response = await fetch(thumbnail);
+      const blob = await response.blob();
+      const file = new File([blob], `${videoId}.jpg`, { type: "image/jpeg" });
+      const filePath = await uploadGalleryFile(selectedAlbum, file);
+
+      const { error } = await supabase.from("gallery_images").insert({
+        album_id: selectedAlbum,
+        file_path: filePath,
+        alt: title,
+        caption: "",
+        media_type: "video",
+        video_url: embedUrl,
+        sort_order: images.length,
+      });
+      if (error) throw error;
+
+      queryClient.invalidateQueries({ queryKey: ["gallery-images", selectedAlbum] });
+      setYoutubeUrl("");
+      setYoutubeTitle("");
+      setYoutubeThumbnail("");
+      toast({ title: "Vidéo YouTube ajoutée" });
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Erreur";
+      toast({ title: "Erreur", description: msg, variant: "destructive" });
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
